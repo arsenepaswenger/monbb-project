@@ -1,6 +1,5 @@
-# TODO
-
-- [ ] Ajouter l’import du CSS de maplibre-gl dans le point d’entrée (main.jsx) : `import "maplibre-gl/dist/maplibre-gl.css";`
-- [ ] Ajouter l’import de maplibre-gl côté page si besoin (ex: `BoutiquesMap.jsx`), puis initialiser la map avec un conteneur.
-- [ ] Vérifier le build/lint.
+- [ ] Ajouter une contrainte de version Node (engines) si nécessaire
+- [ ] Corriger le problème Vercel: `Permission denied` sur `node_modules/.bin/vite`
+- [ ] Vérifier l’absence de scripts/hooks qui modifient les permissions
+- [ ] Refaire un deploy Vercel et confirmer que `npm run build` passe
 
