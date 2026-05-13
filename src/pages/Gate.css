@@ -1,0 +1,58 @@
+.gate-page{
+  min-height:100vh;
+  width:100%;
+  position:relative;
+  overflow:hidden;
+  background:#000;
+  color:#fff;
+}
+
+/* Fond luxe + blur */
+.gate-bg{
+  position:absolute;
+  inset:0;
+  background-image:url('/images/hero.jpg');
+  background-size:cover;
+  background-position:center;
+  filter: blur(10px) saturate(1.1);
+  transform: scale(1.06);
+  opacity:0.85;
+}
+
+/* Overlay noir pour rendre le contraste */
+.gate-page::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+}
+
+.gate-surface{
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.gate-loader{
+  width:min(520px, 100%);
+  padding:28px 26px;
+  border-radius:18px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  font-size:16px;
+  text-align:center;
+  animation: gateFloat 1.4s ease-in-out infinite;
+}
+
+@keyframes gateFloat{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-6px); }
+}
+
+
