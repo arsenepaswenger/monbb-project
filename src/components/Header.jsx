@@ -1,24 +1,23 @@
 import { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import '../App.css';
+
+const MotionNavLink = motion.create(NavLink);
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    'RECHERCHE',
-    'MODE', 
-
-    'LIFESTYLE',
-    'CULTURE',
-    'ABOUT',
-    'GALERIE',
-    'BLOG',
-    
-    'CONTACT',
-    'BOUTIQUES',
-    'TOTO' 
-    
+    { label: 'RECHERCHE', path: '/recherche' },
+    { label: 'MODE', path: '/mode' },
+    { label: 'LIFESTYLE', path: '/lifestyle' },
+    { label: 'CULTURE', path: '/culture' },
+    { label: 'ABOUT', path: '/about' },
+    { label: 'GALERIE', path: '/galerie' },
+    { label: 'BLOG', path: '/blog' },
+    { label: 'CONTACT', path: '/contact' },
+    { label: 'BOUTIQUES', path: '/boutiques' },
   ];
 
 
@@ -40,11 +39,11 @@ function Header() {
           <h1 className="logo">HAUTE COUTURE</h1>
         </div>
         <div className="header-right">
-          <a href="/abonnement" className="cta">ABONNEMENT</a>
+          <Link to="/abonnement" className="cta">ABONNEMENT</Link>
           <span className="separator">|</span>
-          <a href="/connexion" className="cta">SE CONNECTER</a>
+          <Link to="/connexion" className="cta">SE CONNECTER</Link>
           <span className="separator">|</span>
-          <a href="/deconnexion" className="cta">SE DÉCONNECTER</a>
+          <Link to="/deconnexion" className="cta">SE DÉCONNECTER</Link>
 
         </div>
       </div>
@@ -53,19 +52,18 @@ function Header() {
       <nav className="header-nav">
         <div className="nav-container">
         {navItems.map((item, index) => {
-          const route = item.toLowerCase();
           return (
-            <motion.a
-              key={item}
-              href={`/${route}`}
+            <MotionNavLink
+              key={item.path}
+              to={item.path}
               className="nav-link"
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: index * 0.05 }}
               whileHover={{ scale: 1.1 }}
             >
-              {item}
-            </motion.a>
+              {item.label}
+            </MotionNavLink>
           );
         })}
         </div>
@@ -82,19 +80,18 @@ function Header() {
         >
           <div className="mobile-menu-content">
             {navItems.map((item, index) => {
-              const route = item.toLowerCase();
               return (
-                <motion.a
-                  key={item}
-                  href={`/${route}`}
+                <MotionNavLink
+                  key={item.path}
+                  to={item.path}
                   className="mobile-nav-link"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item}
-                </motion.a>
+                  {item.label}
+                </MotionNavLink>
               );
             })}
           </div>

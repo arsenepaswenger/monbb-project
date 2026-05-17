@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, useContext } from "react";
 import { motion } from "framer-motion";// Correction : framer-motion est devenu motion/react sur les versions récentes, ou garde ton import actuel si ça marche
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import "./Connexion.css";
 
 import { AuthContext } from "../context/AuthContext";
 import { supabase } from "../supabase";
+import { getAuthCallbackUrl, saveUserProfile } from "../lib/auth";
 
 const SEND_EMAIL_URL = "/api/send-email";
 const EMAIL_TIMEOUT_MS = 8000;
@@ -42,20 +43,6 @@ async function sendWelcomeEmail({ email, name }) {
   }
 }
 
-async function saveUserProfile(user, name = "") {
-  const { error } = await supabase.from("profiles").upsert(
-    {
-      id: user.id,
-      email: user.email,
-      full_name: name || user.user_metadata?.full_name || user.user_metadata?.name || "",
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "id" }
-  );
-
-  if (error) throw error;
-}
-
 function getAuthErrorMessage(error) {
   const message = error.message || "";
 
@@ -83,7 +70,9 @@ function getAuthErrorMessage(error) {
 
 function Connexion() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useContext(AuthContext);
+  const redirectAfterLogin = location.state?.from || "/home";
 
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -99,9 +88,9 @@ function Connexion() {
 
   useEffect(() => {
     if (user && !signupInProgressRef.current) {
-      navigate("/home", { replace: true });
+      navigate(redirectAfterLogin, { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, navigate, redirectAfterLogin]);
 
   useEffect(() => () => {
     if (redirectTimeoutRef.current) {
@@ -126,7 +115,7 @@ function Connexion() {
         if (loginError) throw loginError;
 
         await saveUserProfile(data.user);
-        navigate("/home", { replace: true });
+        navigate(redirectAfterLogin, { replace: true });
         return;
       }
 
@@ -135,7 +124,7 @@ function Connexion() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: getAuthCallbackUrl(),
           data: {
             name,
             full_name: name,
@@ -159,10 +148,12 @@ function Connexion() {
 
       const followUpErrors = [];
 
-      try {
-        await saveUserProfile(data.user, name);
-      } catch (profileSaveError) {
-        followUpErrors.push(profileSaveError);
+      if (data.session) {
+        try {
+          await saveUserProfile(data.user, name);
+        } catch (profileSaveError) {
+          followUpErrors.push(profileSaveError);
+        }
       }
 
       let emailSent = false;
